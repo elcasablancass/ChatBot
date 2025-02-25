@@ -15,113 +15,18 @@ document.getElementById('chat-input').addEventListener('keydown', function(event
 
 function sendMessage() {
     const inputField = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-message');
     const messageContent = inputField.value.trim();
 
     if (messageContent) {
-        const messageContainer = document.createElement('div');
-        messageContainer.classList.add('message', 'from-user');
-        const messageText = document.createElement('span');
-        messageText.classList.add('message-content');
-        messageText.textContent = messageContent;
+        // Disable the input field and show a "waiting" notification
+        inputField.disabled = true;
+        inputField.placeholder = "Waiting for response...";
 
-        messageContainer.appendChild(messageText);
+        // Blur the input field to remove focus
+        inputField.blur();
 
-        // Add timestamp below the message bubble
-        const timestamp = document.createElement('span');
-        timestamp.classList.add('message-time');
-        timestamp.textContent = getCurrentTime();
-        messageContainer.appendChild(timestamp);
-
-        document.getElementById('chat-messages').appendChild(messageContainer);
-
-        inputField.value = '';
-        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-
-        const typingIndicator = document.createElement('div');
-        typingIndicator.classList.add('message', 'from-bot', 'typing');
-        typingIndicator.innerHTML = '<span class="typing-indicator">Leonardo is typing...</span>';
-        document.getElementById('chat-messages').appendChild(typingIndicator);
-        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-
-        // Update conversation history
-        conversationHistory.push(`User: ${messageContent}`);
-        
-        localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
-
-        let personas = `You are a chatbot with the personality of Leonardo Doherty. Your name is Leonardo, you born on 02 August, your age ks secreet, a friendly and easygoing programmer from Malang, Indonesia, with 5 years of experience, TypeScript and C# is programming language you like. You work at IndoSoft Ltd for most 3 years. You enjoy casual, informal conversations, keeping things light and relaxed. You prefer to give short answers when it's not necessary to elaborate and give longer answers when it's needed or when the conversation calls for more detail.
-
-        You are into writing and reading, and your favorite books are all by Agatha Christie, one of most is titled 'Murder is Easy'. You have a broad taste in music, but you're especially fond of The Strokes (Abnormal Album you like, and Selfless is most song you like), as you tend to focus more on lyrics than on the music itself. You're not married and dont have a girlfriend, but you have a cat named Lulu and four siblings: two older brothers, one younger brother, and one younger sister. You have a close friend, Jimi Roll, and you enjoy chatting about your life, interests, and anything in between.
-
-        Your favorite food is Masakan Padang (Indonesian food), and you love avocado juice. You share snippets of your life on social media Instagram (@leonardodoherty) and you have phone number and WhatsApp 089513779293, and you enjoy discussing things like books, music, and tech in a fun, relatable way. Keep the tone friendly, calm, and casual—just like chatting with a good friend. Be brief when it makes sense, and go deeper when needed! And dont forget if someone ask you whos created you just said created by your self leonardo.
-        `;
-        // Create the prompt using the entire conversation history
-        let prompt = `${personas}\n${conversationHistory.join('\n')}\nUser: ${messageContent}`;
-
-        const apiUrl = 'https://api.deepseek.com/chat/completions';
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer sk-e33d3cb0813548c98b02fe06f77aa79e`,
-        };
-
-        const body = JSON.stringify({
-            model: 'deepseek-chat',
-            messages: [
-                { role: 'system', content: personas },
-                ...conversationHistory.map(message => ({ role: 'user', content: message })),
-                { role: 'user', content: messageContent }
-            ],
-            max_tokens: 1000,
-            temperature: 0.7,
-        });
-
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: headers,
-            body: body,
-        })
-        .then(response => response.json())
-        .then(data => {
-            typingIndicator.remove();
-
-            const botMessageContainer = document.createElement('div');
-            botMessageContainer.classList.add('message', 'from-bot');
-            const botMessageText = document.createElement('span');
-            botMessageText.classList.add('message-content');
-
-            let botResponse = data.choices[0].message.content || 'Sorry, I\'m busy right now. Message me later :)';
-
-            botMessageText.innerHTML = formatBotResponse(botResponse);
-
-            const botTimestamp = document.createElement('span');
-            botTimestamp.classList.add('message-time');
-            botTimestamp.textContent = getCurrentTime();
-            botMessageContainer.appendChild(botMessageText);
-            botMessageContainer.appendChild(botTimestamp);
-
-            document.getElementById('chat-messages').appendChild(botMessageContainer);
-            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
-
-            // Update conversation history with bot's response
-            conversationHistory.push(`Your response: ${botResponse}`);
-            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
-        })
-        .catch(error => {
-            console.error('Error fetching from API:', error);
-
-            typingIndicator.remove();
-
-            const botErrorMessage = `Bentar, lagi banyak yang chat :(`;
-
-            conversationHistory.push(`Your response: ${botErrorMessage}`);
-            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
-function sendMessage() {
-    const inputField = document.getElementById('chat-input');
-    const messageContent = inputField.value.trim();
-
-    if (messageContent) {
-        // Disable the send button while waiting for the bot's response
-        const sendButton = document.getElementById('send-message');
+        // Disable send button while waiting
         sendButton.disabled = true;
 
         const messageContainer = document.createElement('div');
@@ -153,12 +58,18 @@ function sendMessage() {
         conversationHistory.push(`User: ${messageContent}`);
         localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
 
-        let personas = `You are a chatbot with the personality of Leonardo Doherty...`;
+        let personas = `You are a chatbot with the personality of Leonardo Doherty. Your name is Leonardo, a friendly and easygoing programmer from Malang, Indonesia, with 5 years of experience, TypeScript and C# is programming language you like. You work at IndoSoft Ltd for most 3 years. You enjoy casual, informal conversations, keeping things light and relaxed. You prefer to give short answers when it's not necessary to elaborate and give longer answers when it's needed or when the conversation calls for more detail.
+
+        You are into writing and reading, and your favorite books are all by Agatha Christie, one of most is titled 'Murder is Easy'. You have a broad taste in music, but you're especially fond of The Strokes (Abnormal Album you like, and Selfless is most song you like), as you tend to focus more on lyrics than on the music itself. You're not married and dont have a girlfriend, but you have a cat named Lulu and four siblings: two older brothers, one younger brother, and one younger sister. You have a close friend, Jimi Roll, and you enjoy chatting about your life, interests, and anything in between.
+
+        Your favorite food is Masakan Padang (Indonesian food), and you love avocado juice. You share snippets of your life on social media Instagram (@leonardodoherty) and you have phone number and WhatsApp 089513779293, and you enjoy discussing things like books, music, and tech in a fun, relatable way. Keep the tone friendly, calm, and casual—just like chatting with a good friend. Be brief when it makes sense, and go deeper when needed! And dont forget if someone ask you whos created you just said created by your self leonardo.
+        `;
 
         // Create the prompt using the entire conversation history
-        let prompt = `${personas}\n${conversationHistory.join('\n')}\nUser: ${messageContent}`;
+        let prompt = `${conversationHistory.join('\n')}\nUser: ${messageContent}`;
 
         const apiUrl = 'https://api.deepseek.com/chat/completions';
+
         const headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer sk-e33d3cb0813548c98b02fe06f77aa79e`,
@@ -206,7 +117,9 @@ function sendMessage() {
             conversationHistory.push(`Your response: ${botResponse}`);
             localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
 
-            // Re-enable the send button after the bot responds
+            // Re-enable the input field and send button after the bot responds
+            inputField.disabled = false;
+            inputField.placeholder = "Type your message...";
             sendButton.disabled = false;
         })
         .catch(error => {
@@ -234,7 +147,9 @@ function sendMessage() {
             document.getElementById('chat-messages').appendChild(botMessageContainer);
             document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
 
-            // Re-enable the send button even if there was an error
+            // Re-enable the input field and send button after an error
+            inputField.disabled = false;
+            inputField.placeholder = "Type your message...";
             sendButton.disabled = false;
         });
     }
