@@ -115,6 +115,109 @@ function sendMessage() {
 
             conversationHistory.push(`Your response: ${botErrorMessage}`);
             localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+function sendMessage() {
+    const inputField = document.getElementById('chat-input');
+    const messageContent = inputField.value.trim();
+
+    if (messageContent) {
+        // Disable the send button while waiting for the bot's response
+        const sendButton = document.getElementById('send-message');
+        sendButton.disabled = true;
+
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message', 'from-user');
+        const messageText = document.createElement('span');
+        messageText.classList.add('message-content');
+        messageText.textContent = messageContent;
+
+        messageContainer.appendChild(messageText);
+
+        // Add timestamp below the message bubble
+        const timestamp = document.createElement('span');
+        timestamp.classList.add('message-time');
+        timestamp.textContent = getCurrentTime();
+        messageContainer.appendChild(timestamp);
+
+        document.getElementById('chat-messages').appendChild(messageContainer);
+
+        inputField.value = '';
+        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+
+        const typingIndicator = document.createElement('div');
+        typingIndicator.classList.add('message', 'from-bot', 'typing');
+        typingIndicator.innerHTML = '<span class="typing-indicator">Leonardo is typing...</span>';
+        document.getElementById('chat-messages').appendChild(typingIndicator);
+        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+
+        // Update conversation history
+        conversationHistory.push(`User: ${messageContent}`);
+        localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+
+        let personas = `You are a chatbot with the personality of Leonardo Doherty...`;
+
+        // Create the prompt using the entire conversation history
+        let prompt = `${personas}\n${conversationHistory.join('\n')}\nUser: ${messageContent}`;
+
+        const apiUrl = 'https://api.deepseek.com/chat/completions';
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer sk-e33d3cb0813548c98b02fe06f77aa79e`,
+        };
+
+        const body = JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [
+                { role: 'system', content: personas },
+                ...conversationHistory.map(message => ({ role: 'user', content: message })),
+                { role: 'user', content: messageContent }
+            ],
+            max_tokens: 1000,
+            temperature: 0.7,
+        });
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: headers,
+            body: body,
+        })
+        .then(response => response.json())
+        .then(data => {
+            typingIndicator.remove();
+
+            const botMessageContainer = document.createElement('div');
+            botMessageContainer.classList.add('message', 'from-bot');
+            const botMessageText = document.createElement('span');
+            botMessageText.classList.add('message-content');
+
+            let botResponse = data.choices[0].message.content || 'Sorry, I\'m busy right now. Message me later :)';
+
+            botMessageText.innerHTML = formatBotResponse(botResponse);
+
+            const botTimestamp = document.createElement('span');
+            botTimestamp.classList.add('message-time');
+            botTimestamp.textContent = getCurrentTime();
+            botMessageContainer.appendChild(botMessageText);
+            botMessageContainer.appendChild(botTimestamp);
+
+            document.getElementById('chat-messages').appendChild(botMessageContainer);
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+
+            // Update conversation history with bot's response
+            conversationHistory.push(`Your response: ${botResponse}`);
+            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
+
+            // Re-enable the send button after the bot responds
+            sendButton.disabled = false;
+        })
+        .catch(error => {
+            console.error('Error fetching from API:', error);
+
+            typingIndicator.remove();
+
+            const botErrorMessage = `Bentar, lagi banyak yang chat :(`;
+
+            conversationHistory.push(`Your response: ${botErrorMessage}`);
+            localStorage.setItem('conversationHistory', JSON.stringify(conversationHistory));
 
             const botMessageContainer = document.createElement('div');
             botMessageContainer.classList.add('message', 'from-bot');
@@ -130,9 +233,13 @@ function sendMessage() {
 
             document.getElementById('chat-messages').appendChild(botMessageContainer);
             document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+
+            // Re-enable the send button even if there was an error
+            sendButton.disabled = false;
         });
     }
 }
+
 
 
 function formatBotResponse(response) {
