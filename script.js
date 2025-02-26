@@ -184,7 +184,10 @@ function formatBotResponse(response) {
         return `<pre><code>${escapeHtml(p1)}</code></pre>`;
     });
 
-
+    response = response.replace(/([^.]*\.[^.]*\.[^.]*\.)/g, function (match) {
+        return '<p>' + match.trim() + '</p>';
+    });
+    
     response = response.replace(/`([^`]+)`/g, function(match, p1) {
         return `<code>${escapeHtml(p1)}</code>`;
     });
