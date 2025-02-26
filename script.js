@@ -155,8 +155,6 @@ function sendMessage() {
     }
 }
 
-
-
 function formatBotResponse(response) {
     // Bold text marked with **...**
     response = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -211,7 +209,6 @@ function escapeHtml(text) {
         return map[match];
     });
 }
-
 
 window.addEventListener('beforeunload', function() {
     localStorage.removeItem('conversationHistory');
