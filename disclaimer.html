@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .language-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .language-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .language-button:hover {
+            background-color: #0056b3;
+        }
+        .disclaimer-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+        .disclaimer-text strong {
+            color: #333;
+        }
+        .contact-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .contact-button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        .contact-button:hover {
+            background-color: #218838;
+        }
+        .chatbot-button {
+            background-color: #17a2b8;
+        }
+        .chatbot-button:hover {
+            background-color: #138496;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>DISCLAIMER</h1>
+        
+        <div class="language-buttons">
+            <button class="language-button" onclick="setLanguage('en')">English</button>
+            <button class="language-button" onclick="setLanguage('id')">Indonesian</button>
+        </div>
+
+        <div id="disclaimer-text" class="disclaimer-text">
+            <!-- Disclaimer text will be injected here -->
+        </div>
+        <br>
+        <button class="contact-button chatbot-button" onclick="window.location.href='index.html'">Back to Chat Bot</button>
+        <br>
+        <!-- Buttons to go to Chatbot and Contact Details -->
+         <h3>Contact : </h3>
+        <div class="contact-buttons">
+            <button class="contact-button" onclick='window.location.href="https://wa.me/6289513779293"'>WhatsApp</button>
+            <button class="contact-button" onclick="window.location.href='mailto:dohertyleonardo@gmail.com'">Email</button>
+        </div>
+    </div>
+
+    <script>
+        const englishDisclaimer = `
+            <p><strong>Disclaimer:</strong></p>
+            <p>Welcome to the Leonardo Bot! This bot is meant for fun and entertainment purposes only. While it is a representation of my self, the chatbot sometimes exhibits its own personality beyond Leonardo's character.</p>
+            <p>Please note that the chatbot may respond in ways that are not aligned with my character at times.</p>
+            <p>Enjoy your conversation with the Leonardo Bot!</p>
+        `;
+
+        const indonesianDisclaimer = `
+            <p><strong>Disclaimer:</strong></p>
+            <p>Selamat datang di Leonardo Bot! Bot ini hanya untuk tujuan hiburan dan kesenangan. Meskipun bot ini merupakan representasi dari saya, terkadang bot menunjukkan kepribadiannya sendiri di luar karakter saya.</p>
+            <p>Harap dicatat bahwa chatbot terkadang merespons dengan cara yang tidak sesuai dengan karakter saya.</p>
+            <p>Nikmati percakapan Anda dengan Leonardo Bot!</p>
+        `;
+
+        // Set language function to change disclaimer text
+        function setLanguage(language) {
+            if(language === 'en') {
+                document.getElementById('disclaimer-text').innerHTML = englishDisclaimer;
+            } else if(language === 'id') {
+                document.getElementById('disclaimer-text').innerHTML = indonesianDisclaimer;
+            }
+        }
+
+        window.onload = function() {
+            setLanguage('en');
+        }
+    </script>
+
+</body>
+</html>

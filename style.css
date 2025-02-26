@@ -27,6 +27,7 @@ body {
     height: 100%;
     overflow: hidden;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .chat-header {
@@ -268,4 +269,17 @@ strong {
 
 .message p {
     margin-bottom: 16px;
+}
+
+.disclaimer {
+    position: absolute;
+    right: 10px;
+    top: 20%;
+    transform: translateY(-50%);
+    width: 30px;
+    z-index: 99;
+}
+
+.disclaimer img {
+    width: 100%;
 }
