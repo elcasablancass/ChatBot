@@ -265,3 +265,7 @@ strong {
     text-align: right;
     font-weight: 500;
 }
+
+.message p {
+    margin-bottom: 16px;
+}
